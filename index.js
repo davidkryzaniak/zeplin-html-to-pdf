@@ -3,6 +3,9 @@ const wkhtmltopdf = require("./utils/wkhtmltopdf");
 const errorUtil = require("./utils/error");
 
 exports.handler = function handler(event, context, callback) {
+
+    if (event.body) {event.html = event.body;} //allows us to use the html parameter or body of the request from the API Gateway
+
     if (!event.html) {
         const errorResponse = errorUtil.createErrorResponse(400, "Validation error: Missing field 'html'.");
         callback(errorResponse);
@@ -12,7 +15,7 @@ exports.handler = function handler(event, context, callback) {
     wkhtmltopdf(event.html)
         .then(buffer => {
             callback(null, {
-                data: buffer.toString("base64")
+                body: buffer.toString("base64") // API Gateways need a "body" element
             });
         }).catch(error => {
             callback(errorUtil.createErrorResponse(500, "Internal server error", error));

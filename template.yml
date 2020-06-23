@@ -13,3 +13,14 @@ Resources:
       Environment:
         Variables:
           FONTCONFIG_PATH: /var/task/fonts
+      Events:
+        HttpApiPost:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+
+Outputs:
+  URL:
+    Description: "API endpoint URL for Prod environment"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
